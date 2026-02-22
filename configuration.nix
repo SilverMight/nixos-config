@@ -4,6 +4,15 @@
 
 { config, lib, pkgs, ... }:
 
+let
+  format = pkgs.formats.yaml {};
+  # A workaround generate a valid Headscale config accepted by Headplane
+  settings = lib.recursiveUpdate config.services.headscale.settings {
+    tls_cert_path = "/dev/null";
+    tls_key_path = "/dev/null";
+  };
+  headscaleConfig = format.generate "headscale.yml" settings;
+in
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -163,10 +172,37 @@
 
   sops = {
     defaultSopsFile = ./secrets.yaml;
-    secrets."headplane/serverCookieSecret" = {};
+    secrets."headplane/serverCookieSecret" = {
+      owner = "headscale";
+      group = "headscale";
+      mode = "0440";
+    };
+    secrets."headplane/preAuthKey" = {
+      owner = "headscale";
+      group = "headscale";
+      mode = "0440";
+    };
     age.sshKeyPaths = [
       "/etc/ssh/ssh_host_ed25519_key"
     ];
+  };
+
+  services.headplane = {
+    enable = true;
+    settings = {
+      server = {
+        host = "127.0.0.1";
+        port = 3000;
+        cookie_secret_path = config.sops.secrets."headplane/serverCookieSecret".path;
+      };
+      headscale = {
+        config_path = "${headscaleConfig}";
+      };
+      integration.agent = {
+        enabled = true;
+        pre_authkey_path = config.sops.secrets."headplane/preAuthKey".path;
+      };
+    };
   };
 
   # Minecraft
@@ -236,7 +272,6 @@
     };
   };
 
-
   services.tailscale = {
     enable = true;
     useRoutingFeatures = "server";
@@ -250,9 +285,14 @@
     enable = true;
     virtualHosts."vps.silvermight.com" = {
       extraConfig = ''
-            handle {
-              reverse_proxy http://127.0.0.1:8080
-            }
+        @admin path /admin /admin/*
+        
+        handle @admin {
+          reverse_proxy http://127.0.0.1:3000
+        }
+        handle {
+          reverse_proxy http://127.0.0.1:8080
+        }
       '';
     };
   };
@@ -267,4 +307,3 @@
   };
 };
 }
-
