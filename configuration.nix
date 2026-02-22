@@ -85,7 +85,7 @@
     enable = true;
     enableIPv6 = true;
     internalInterfaces = [ "wg0" "tailscale0" ];
-    externalInterface = "eth0";
+    externalInterface = "enp0s6";
   };
 
   networking.firewall.trustedInterfaces = [ "wg0" "tailscale0" ];
@@ -103,7 +103,7 @@
   #      # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
   #      # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice) in your clients
   #      postSetup = ''
-  #        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
+  #        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o enp0s6 -j MASQUERADE
   #
   #        # Allow LAN traffic between WireGuard clients
   #        ${pkgs.iptables}/bin/iptables -A FORWARD -i wg0 -o wg0 -j ACCEPT
@@ -111,7 +111,7 @@
   #
   #      # This undoes the above command
   #      postShutdown = ''
-  #        ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
+  #        ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s 10.0.0.0/24 -o enp0s6 -j MASQUERADE
   #
   #        # Remove LAN forwarding
   #        ${pkgs.iptables}/bin/iptables -D FORWARD -i wg0 -o wg0 -j ACCEPT
@@ -256,7 +256,7 @@
   rules."50-tailscale-optimizations" = {
     onState = [ "routable" ];
     script = ''
-      ${pkgs.ethtool}/bin/ethtool -K eth0 rx-udp-gro-forwarding on rx-gro-list off
+      ${pkgs.ethtool}/bin/ethtool -K enp0s6 rx-udp-gro-forwarding on rx-gro-list off
     '';
   };
 };
