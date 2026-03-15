@@ -14,7 +14,7 @@ in
     [ 
       ./hardware-configuration.nix
       ./disk-config.nix
-      ../common/default.nix
+      ../../common/default.nix
     ];
 
   # ==========================================

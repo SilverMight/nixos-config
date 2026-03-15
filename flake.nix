@@ -21,7 +21,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           inputs.sops-nix.nixosModules.sops
-          ./nixos-rpi/configuration.nix
+          ./hosts/rpi/configuration.nix
         ];
       };
       
@@ -32,7 +32,7 @@
           inputs.disko.nixosModules.disko
           inputs.headplane.nixosModules.headplane
           inputs.sops-nix.nixosModules.sops
-          ./vps-nixos/configuration.nix
+          ./hosts/vps/configuration.nix
           {
             nixpkgs.overlays = [
               inputs.headplane.overlays.default
