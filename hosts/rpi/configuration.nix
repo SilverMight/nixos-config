@@ -26,9 +26,23 @@
   # ==========================================
   # USER & ACCESS (Specifics only)
   # ==========================================
+  users.users.silvermight = {
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
+  };
 
   # no sudo passwd
   security.sudo.wheelNeedsPassword = false;
+  security.sudo.extraRules = [
+    {
+      users = ["silvermight"];
+      commands = [
+        {
+          command = "ALL";
+          options = ["NOPASSWD"];
+        }
+      ];
+    }
+  ];
 
   ## PACKAGES (Specific to RPi)
   environment.systemPackages = with pkgs; [
