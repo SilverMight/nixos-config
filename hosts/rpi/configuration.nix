@@ -107,6 +107,16 @@
     notifications.wall.enable = true;
   };
 
+  # Borg hosting
+  services.borgbackup.repos = {
+      borgRepo = {
+        path = "/mnt/backup/borg";
+        authorizedKeys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICVISoOZI3rWLfDH6wTADb4Q1G2i3vKukozEkRwa2oD3 borg-backup-key"
+        ];
+      };
+    };
+
   virtualisation.docker.enable = true;
   
   # ==========================================

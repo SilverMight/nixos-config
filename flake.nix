@@ -12,6 +12,9 @@
     
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
+    deploy-rs.url = "github:serokell/deploy-rs";
+    deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { self, nixpkgs, ... }@inputs: {
@@ -41,5 +44,30 @@
         ];
       };
     };
+
+    deploy.nodes = {
+
+
+      rpi4 = {
+        hostname = "rpi.local";
+        profiles.system = {
+          sshUser = "silvermight";
+          path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.rpi4;
+          user = "root";
+        };
+      };
+
+      vps = {
+        hostname = "vps.silvermight.com";
+        profiles.system = {
+          sshUser = "silvermight";
+          path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.vps;
+          user = "root";
+        };
+      };
+    };
+
+    # This is highly recommended by deploy-rs
+    checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) inputs.deploy-rs.lib;
   };
 }

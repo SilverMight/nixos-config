@@ -106,7 +106,7 @@ in
       group = "headscale";
       mode = "0440";
     };
-    secrets."headplane/preAuthKey" = {
+    secrets."headplane/headscaleApiKey" = {
       owner = "headscale";
       group = "headscale";
       mode = "0440";
@@ -183,10 +183,10 @@ in
       };
       headscale = {
         config_path = "${headscaleConfig}";
+        api_key_path = config.sops.secrets."headplane/headscaleApiKey".path;
       };
       integration.agent = {
         enabled = true;
-        pre_authkey_path = config.sops.secrets."headplane/preAuthKey".path;
       };
     };
   };
