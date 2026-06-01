@@ -89,7 +89,7 @@ in
     enable = true;
     trustedInterfaces = [ "wg0" "tailscale0" ];
     allowPing = true;
-    allowedTCPPorts = [ 22 80 443 ];
+    allowedTCPPorts = [ 22 80 443 5055 ];
     allowedUDPPorts = [ 51820 3478 config.services.tailscale.port ];
   };
 
@@ -116,6 +116,11 @@ in
   # ==========================================
   # SERVICES
   # ==========================================
+
+  # Traccar GPS Tracking
+  services.traccar = {
+    enable = true;
+  };
 
   # SSH
   services.openssh = {
@@ -190,7 +195,6 @@ in
       };
     };
   };
-
   # Web Server & Reverse Proxy
   services.caddy = {
     enable = true;
@@ -204,6 +208,11 @@ in
         handle {
           reverse_proxy http://127.0.0.1:8080
         }
+      '';
+    };
+    virtualHosts."traccar.silvermight.com" = {
+      extraConfig = ''
+        reverse_proxy http://127.0.0.1:8082
       '';
     };
   };
