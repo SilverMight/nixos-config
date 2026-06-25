@@ -2,7 +2,7 @@
   description = "Multi-OS Nix flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
@@ -15,6 +15,8 @@
 
     deploy-rs.url = "github:serokell/deploy-rs";
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
+
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
 
   outputs = { self, nixpkgs, ... }@inputs: {
@@ -33,14 +35,8 @@
         specialArgs = { inherit inputs; };
         modules = [
           inputs.disko.nixosModules.disko
-          inputs.headplane.nixosModules.headplane
           inputs.sops-nix.nixosModules.sops
           ./hosts/vps/configuration.nix
-          {
-            nixpkgs.overlays = [
-              inputs.headplane.overlays.default
-            ];
-          }
         ];
       };
     };
@@ -51,8 +47,9 @@
       rpi4 = {
         hostname = "rpi.local";
         profiles.system = {
+          remoteBuild = true;
           sshUser = "silvermight";
-          path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.rpi4;
+          path = inputs.deploy-rs.lib.aarch64-linux.activate.nixos self.nixosConfigurations.rpi4;
           user = "root";
         };
       };
@@ -60,8 +57,9 @@
       vps = {
         hostname = "vps.silvermight.com";
         profiles.system = {
+          remoteBuild = true;
           sshUser = "silvermight";
-          path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.vps;
+          path = inputs.deploy-rs.lib.aarch64-linux.activate.nixos self.nixosConfigurations.vps;
           user = "root";
         };
       };

@@ -1,8 +1,9 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports =
     [ 
+      inputs.nixos-hardware.nixosModules.raspberry-pi-4
       ./hardware-configuration.nix
       ../../common/default.nix
     ];
@@ -18,11 +19,6 @@
   networking.hostName = "rpi"; 
   networking.networkmanager.enable = true;
   
-  # PROPRIETARY HARDWARE BULLSHIT
-  # Enable the Raspberry Pi firmware and drivers
-  hardware.enableRedistributableFirmware = true;
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
-
   # ==========================================
   # USER & ACCESS (Specifics only)
   # ==========================================
