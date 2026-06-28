@@ -3,7 +3,6 @@
 {
   imports =
     [ 
-      inputs.nixos-hardware.nixosModules.raspberry-pi-4
       ./hardware-configuration.nix
       ../../common/default.nix
     ];
@@ -14,6 +13,12 @@
   # extlinux for PI
   boot.loader.grub.enable = false;
   boot.loader.generic-extlinux-compatible.enable = true;
+
+  boot.kernel.sysctl = {
+    # need to do this for the build to not fail:
+    # https://github.com/nixos/nixpkgs/issues/513512
+    "vm.mmap_rnd_bits" = 24;
+  }; 
 
   # Basic Networking
   networking.hostName = "rpi"; 
