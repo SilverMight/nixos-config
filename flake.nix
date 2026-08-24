@@ -53,7 +53,7 @@
 
     deploy.nodes = {
       rpi4 = {
-        hostname = "rpi.local";
+        hostname = "rpi.lan";
         profiles.system = {
           remoteBuild = true;
           sshUser = "silvermight";

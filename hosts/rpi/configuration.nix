@@ -18,6 +18,9 @@
     # need to do this for the build to not fail:
     # https://github.com/nixos/nixpkgs/issues/513512
     "vm.mmap_rnd_bits" = 24;
+
+    # Immich: redis/valkey needs overcommit for background saves
+    "vm.overcommit_memory" = 1;
   }; 
 
   # Basic Networking
