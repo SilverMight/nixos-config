@@ -52,6 +52,7 @@
   environment.systemPackages = with pkgs; [
     vim
     htop
+    btop
     git
     curl
     tree
@@ -60,6 +61,8 @@
     cryptsetup
     btrfs-progs
     smartmontools
+    tmux
+    duperemove
   ];
 
   networking.firewall = {
