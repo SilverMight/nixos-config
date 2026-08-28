@@ -125,6 +125,25 @@
     };
 
   virtualisation.docker.enable = true;
+
+  # ==========================================
+  # MEMORY MANAGEMENT
+  # ==========================================
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50;
+  };
+
+  services.earlyoom = {
+    enable = true;
+    freeMemThreshold = 5;
+    freeSwapThreshold = 5;
+    enableNotifications = true;
+  };
+
+  # Conflict w/ earlyoom and smartd...
+  services.systembus-notify.enable = true;
+
   
   # ==========================================
   # MAINTENANCE
